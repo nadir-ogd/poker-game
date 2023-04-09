@@ -18,7 +18,7 @@ class dealer{
     void print_cards();
     void print_deck();
     void encheres(int);
-    void combinaisons(int);
+    int determine_winner(hand& hand_dealer);
     
     public:
     dealer();

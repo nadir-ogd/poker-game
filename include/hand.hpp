@@ -6,7 +6,7 @@
 class hand{
     private:
         vector<card> hand_cards;
-		int score;
+		int score = 0;
     public:
         hand() = default;
         bool is_royal_flush(hand);
@@ -18,10 +18,11 @@ class hand{
         bool is_3_of_a_kind(hand);
         bool is_two_pairs(hand);
         bool is_one_pair(hand);
-        bool is_high_card(hand);
+        void high_card(hand);
         void setCards(card &c);
         card get_card(int ind);
+        void update_score(float val);
+        float get_score();
         void print_hand();
-        int sizeBroad();
 };
 #endif

@@ -26,7 +26,8 @@ class player{
         void print_player(int);
         void print_card();
         hand get_hand();
-        //bool in_game();
+        float get_credit();
+        void update_credit(float);
 };
 
 #endif

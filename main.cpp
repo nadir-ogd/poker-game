@@ -11,11 +11,11 @@ int main() {
     // }        
     card c1(Coeurs, Ten);
     card c2(Trefles,Ace);
-    card c3(Piques, Ten);
+    card c3(Piques, Eight);
     card c4(Piques,Ace);
-    card c5(Piques,Jack);
-    card c6(Piques, King);
-    card c7(Piques, Deuce);  
+    card c5(Piques,King);
+    card c6(Piques, Queen);
+    card c7(Piques, Jack);  
     h1.setCards(c1);  
     h1.setCards(c2);  
     h1.setCards(c3);  
@@ -28,8 +28,8 @@ int main() {
     cout << """""""""" << endl;
     h1.print_hand();
     cout << """""""""" << endl;
-    cout << h2.is_one_pair(h1) << endl;
+    //cout << h2.is_one_pair(h1) << endl;
 
-    //cout << h1.is_royal_flush(h2) << endl;
+    cout << h1.is_royal_flush(h2) << endl;
     //cout << h1.is_straight_flush(h2) << endl;
 }

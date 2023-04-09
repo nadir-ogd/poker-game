@@ -142,9 +142,63 @@ void dealer::encheres(int i)
    
 }
 
-void dealer::combinaisons(int i)
-{
-    
+int dealer::determine_winner(hand& hand_board) {
+    int max_score = 0;
+
+    for (int i =0; i < nbJoueurs; i++) {
+
+        if(players[i].in_game){
+            hand hp = players[i].get_hand();
+
+            if (hp.is_royal_flush(hand_board)) {
+                hp.update_score(10);
+                max_score = 10;
+
+            } else if (hp.is_straight_flush(hand_board)) {
+                hp.update_score(9);
+                max_score = max(max_score,9);
+            
+            } else if (hp.is_4_of_a_kind(hand_board)) {
+                hp.update_score(8);
+                max_score = max(max_score,8);
+            
+            } else if (hp.is_full_house(hand_board)) {
+                hp.update_score(7);
+                max_score = max(max_score,7);
+            
+            } else if (hp.is_flush(hand_board)) {
+                hp.update_score(6);
+                max_score = max(max_score,6);
+        
+            } else if (hp.is_straight(hand_board)) {
+                hp.update_score(5);
+                max_score = max(max_score,5);
+        
+            } else if (hp.is_3_of_a_kind(hand_board)) {
+                max_score = max(max_score,4);
+        
+            } else if (hp.is_two_pairs(hand_board)) {
+                hp.update_score(3);
+                max_score = max(max_score,3);
+        
+            } else if (hp.is_one_pair(hand_board)) {
+                hp.update_score(2);
+                max_score = max(max_score,2);
+        
+            } else {
+                hp.update_score(1);
+                max_score = max(max_score,1); //High Card
+            }
+        }
+
+        // for(int i = 0; i < noOfPlayers; i++){
+		//     if(count == hands[i].getScore()){
+		// 	    players[i]++;
+		// 	    noOfTiedPlayers++;
+		//     }
+	    // }
+    }
+    //return ;
 }
 
 void dealer::play()
@@ -217,5 +271,15 @@ void dealer::play()
 
     // hand_dealer.print_hand();
 
+    // player* winner = determine_winner(players, hand_dealer);
+
+    // // afficher le gagnant
+    // if (winner != nullptr) {
+    //     cout << "Le gagnant est le joueur " << endl;
+    //     winner->print_player(0);
+    // }
+    // else {
+    //     std::cout << "Aucun gagnant trouvé." << endl;
+    // }
 }
 

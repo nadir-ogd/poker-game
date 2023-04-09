@@ -80,4 +80,13 @@ void player::print_player(int i)
     cout << "credit restant " << credit << endl;
 }
 
+float player::get_credit()
+{
+    return credit;
+}
+
+void player::update_credit(float val)
+{
+    credit+=val;
+}
 
