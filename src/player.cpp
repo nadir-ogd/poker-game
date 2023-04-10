@@ -1,5 +1,5 @@
 #include "../include/player.hpp"
-#include "../include/dealer.hpp"
+#include "../include/game.hpp"
 
 player::player(float val) {
     if (val <= 0) {
@@ -11,7 +11,7 @@ player::player(float val) {
     mise = 0;
     score = 0;
     in_game = true;
-    is_bet = false;
+
 }
 
 
@@ -42,7 +42,6 @@ void player::bet(int amount)
     if (in_game) {
         credit -= amount;
         mise += amount;
-        is_bet = true;
     }
 }
 
@@ -51,15 +50,9 @@ void player::hit(card &c)
     hand_player.setCards(c);
 }
 
-void player::check()
-{
-    is_bet = false;
-    is_check = true;
-}
 
 void player::fold()
 {
-    //is_bet = false;
     in_game = false;
 }
 
@@ -79,7 +72,6 @@ void player::call(int val)
     if (in_game) {
         credit -= val;
         mise += val;
-        is_bet = false;
     }     
 }
 
@@ -99,7 +91,6 @@ void player::raise(int val)
     if (in_game) {
         credit -= val;
         mise += val;
-        is_bet = true;
     }
 }
 

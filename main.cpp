@@ -1,9 +1,9 @@
 #include <iostream>
-#include "../include/dealer.hpp"
+#include "../include/game.hpp"
 
 int main() {
-    dealer d;
-    d.play();
+    game g;
+    g.play();
     // hand h1,h2;
     // // for(int i = 3; i < 7; i++){
     // //     card c(Trefles,static_cast<Rang>(i));

@@ -1,9 +1,9 @@
-#include "../include/dealer.hpp"
+#include "../include/game.hpp"
 #include <cstdlib>
 
 using namespace std;
 
-dealer::dealer()
+game::game()
 {
     for(int i = Piques; i <= Trefles; i++)
 		for(int j = Deuce; j <= Ace; j++)
@@ -12,7 +12,7 @@ dealer::dealer()
     price_pot = SB + BB;
 }
 
-void dealer::shuffle()
+void game::shuffle()
 {
     srand(time(NULL));
     int len = cards.size();
@@ -25,29 +25,29 @@ void dealer::shuffle()
     }
 }
 
-bool dealer::miser_avant(int i) // verifier si il y a une mise faite avant le joueur i
-{
-    int j = 0;
+// bool game::miser_avant(int i) // verifier si il y a une mise faite avant le joueur i
+// {
+//     int j = 0;
 
-    while(j < nbJoueurs){
-        if(j == i)
-            j++;
-        else
-            if(players.at(j).is_bet)
-                return true;
-            else 
-                j++;
-    }     
-    return false;
-}
+//     while(j < nbJoueurs){
+//         if(j == i)
+//             j++;
+//         else
+//             if(players.at(j).is_bet)
+//                 return true;
+//             else 
+//                 j++;
+//     }     
+//     return false;
+// }
 
-void dealer::print_cards()
+void game::print_cards()
 {
     for(int i = 0; i < (int)cards.size(); i++)
         cards.at(i).print();
 }
 
-void dealer::print_deck()
+void game::print_deck()
 {
     for(int i = 0; i < (int)deck.size(); i++) 
     {   
@@ -55,18 +55,18 @@ void dealer::print_deck()
     }
 }
 
-void dealer::blinds(player &g, player &gg)
+void game::blinds(player &g, player &gg)
 {
     //Small Blind 
-    cout << "La small blind : " << SB << "$ est payée..." << endl;
+    cout << "Player " << indSB << " paye la Small Blind : " << SB << " $" << endl; 
     g.bet(SB);
     //Big Blind
-    cout << "La big blind  : " << BB << "$ est payée..." << endl;
+    cout << "Player " << indBB << " paye la Big Blind : " << BB << " $" << endl; 
     gg.bet(BB);
     lastMise = BB;
 }
 
-void dealer::distribuer_player(player &p)
+void game::distribuer_player(player &p)
 {        
     p.hit(deck.back());
     deck.pop_back();
@@ -74,23 +74,85 @@ void dealer::distribuer_player(player &p)
     deck.pop_back();
 }
 
-void dealer::hitBoard()
+void game::hitBoard()
 {
-    hand_dealer.setCards(deck.back());
+    hand_board.setCards(deck.back());
     deck.pop_back();
 }
 
-void dealer::encheres(int i)
+void game::prefflop(int i)
+{
+    int choix,val;
+     if(players[i].in_game){
+        if(i == indBB && !miseAvant){
+            cout << "player " << i << endl;
+            cout << "Qu'est ce que vous voullez faire ?" << endl;
+
+            cout << "(0) bet" << endl;
+            cout << "(1) check" << endl;
+                
+            cin >> choix;
+            switch(choix) {
+                case 0:
+                    cout << "Entrez la somme a miser : ";
+                    cin >> val;
+                    players[i].bet(val);
+                    lastMise = val;
+                    price_pot += val;
+                    miseAvant = true;
+                    break;
+                case 1:
+                    miseAvant = false;
+                    break;
+                }
+        }
+        else {
+            cout << "player " << i << endl;
+            cout << "Qu'est ce que vous voullez faire ?" << endl;
+
+            cout << "(0) fold" << endl;
+            cout << "(1) call" << endl;
+            cout << "(2) raise" << endl;
+
+            cin >> choix;
+            switch(choix) {
+                case 0:
+                    cout << "Vous etre hors main" << endl;
+                    players[i].fold();
+                    break;
+                case 1:
+                    players[i].call(lastMise);
+                    price_pot += lastMise;
+                    if(i == indBB)
+                        miseAvant = false;
+                    break;
+                case 2:
+                    cout << "Entrez la somme a raiser : ";
+                    cin >> val;
+                    while(val < lastMise){
+                        cout << "Entrez une nouvelle valeur à raiser : " << endl;
+                        cin >> val;
+                    }
+                    players[i].raise(val);
+                    lastMise = val; 
+                    price_pot += val;
+                    miseAvant = true;
+                    break;
+            } 
+        }   
+    }
+    else 
+        cout << "player " << i << " vous etes hors main !" << endl;
+}
+
+void game::encheres(int i)
 {
     int choix, val = 0;
-    bool bet_before;
-
-    bet_before = miser_avant(i);
 
     if(players[i].in_game){
         cout << "player " << i << endl;
         cout << "Qu'est ce que vous voullez faire ?" << endl;
-        if(!bet_before)
+        if(!miseAvant)
         {
             cout << "(0) bet" << endl;
             cout << "(1) check" << endl;
@@ -103,13 +165,15 @@ void dealer::encheres(int i)
                     players[i].bet(val);
                     lastMise = val;
                     price_pot += val;
+                    miseAvant = true;
                     break;
                 case 1:
-                    players[i].check();
+                    //players[i].check();
+                    miseAvant = false;
                     break;
             }
         }
-        else 
+        else if(miseAvant)
         {        
             cout << "(0) fold" << endl;
             cout << "(1) call" << endl;
@@ -120,11 +184,12 @@ void dealer::encheres(int i)
                 case 0:
                     cout << "Vous etre hors main" << endl;
                     players[i].fold();
-                    players[i].is_bet = false;
                     break;
                 case 1:
                     players[i].call(lastMise);
                     price_pot += lastMise;
+                    if(indSB == i)
+                        miseAvant = false;
                     break;
                 case 2:
                     cout << "Entrez la somme a raiser : ";
@@ -136,6 +201,7 @@ void dealer::encheres(int i)
                     players[i].raise(val);
                     lastMise = val; 
                     price_pot += val;
+                    miseAvant = true;
                     break;
             }
         }
@@ -145,7 +211,7 @@ void dealer::encheres(int i)
    
 }
 
-void dealer::determine_winner(hand& hand_board) {
+void game::determine_winner(hand& hand_board) {
     int max_score = 0;
 
     for (int i =0; i < nbJoueurs; i++) {
@@ -258,7 +324,6 @@ void dealer::determine_winner(hand& hand_board) {
         for(int i = 0; i < nbJoueurs; i++){
             players[i].get_hand().clear_hand();
             players[i].in_game = true;
-            players[i].is_bet = false;
             players[i].in_game = true;
         }
 
@@ -267,10 +332,10 @@ void dealer::determine_winner(hand& hand_board) {
         price_pot = 0;        
 }
 
-void dealer::play()
+void game::play()
 {
     int nbRounds;
-    int indSB = 0, indBB = 1;
+    indSB = 0, indBB = 1;
 
     cout << "######### Poker Game #########" << endl;
     cout << "Veuillez entrer le nombre de joureurs : ";
@@ -287,7 +352,7 @@ void dealer::play()
         players.push_back(player(credit));
     }  
         
-    dealer();
+    system("clear");
     for(int i = 0; i < nbRounds; i++){
         cout << "Le dealer mélange les cartes..." << endl;
         sleep(rand() % 5);
@@ -300,25 +365,44 @@ void dealer::play()
         for(int i = 0; i < nbJoueurs; i++){
             distribuer_player(players.at(i));
         }
-        cout << "Le Pré-Flop..." << endl;
-        cout << "Le Flop..." << endl;
 
-        for(int i = indBB+1; i< nbJoueurs; i++)
-            if(players[i].in_game)
-                encheres(i);
+        cout << "Le Prefflop..." << endl;
         
-        for(int i = 0; i < indSB; i++)
-            if(players[i].in_game)
-                encheres(i);
-        
-        players[indSB].is_bet = false;
-        players[indBB].is_bet = false;
-        encheres(indSB);
-        encheres(indBB);
-        
+        for(int i = indBB+1; i < (nbJoueurs+indBB+1); i++)
+            prefflop(i % nbJoueurs);
+
         hitBoard();
         hitBoard();
         hitBoard();
+
+
+        cout << "Les 3 premières cartes sont dévoilées :" << endl; 
+        hand_board.print_hand();
+
+        cout << "Le fflop..." << endl;
+
+        for(int i = indSB; i < (nbJoueurs + indSB); i++)
+                encheres(i % nbJoueurs);
+        
+        hitBoard();
+
+        cout << "La 4-ème carte est dévoilée :" << endl; 
+        hand_board.print_hand();
+    
+        cout << "Le turn..." << endl;
+
+        for(int i = indSB; i < (nbJoueurs + indSB); i++)
+                encheres(i % nbJoueurs);
+        
+        hitBoard();
+
+        cout << "La 5-ème carte est dévoilée :" << endl; 
+        hand_board.print_hand();
+
+        cout << "La river..." << endl;
+
+        for(int i = indSB; i < (nbJoueurs + indSB); i++)
+                encheres(i % nbJoueurs);
 
         for(int i = 0; i < nbJoueurs; i++){
             cout << "Player " << i << endl;
@@ -326,7 +410,7 @@ void dealer::play()
         }
 
         cout << "Les cartes actuelles de board :" << endl;
-        hand_dealer.print_hand();
+        hand_board.print_hand();
         
         cout << "Le Turn..." << endl;
 
@@ -341,7 +425,7 @@ void dealer::play()
         }
 
         cout << "Les cartes actuelles de board :" << endl;
-        hand_dealer.print_hand();
+        hand_board.print_hand();
 
             
         cout << "La River..." << endl;
@@ -357,9 +441,9 @@ void dealer::play()
         }
 
         cout << "Les cartes actuelles de board :" << endl;
-        hand_dealer.print_hand();
+        hand_board.print_hand();
 
-        determine_winner(hand_dealer);
+        determine_winner(hand_board);
 
         indSB = (indSB + 1) % nbJoueurs;
         indBB = (indBB + 1) % nbJoueurs;

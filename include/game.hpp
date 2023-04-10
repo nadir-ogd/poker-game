@@ -6,7 +6,7 @@
 #define SB 2
 #define BB 2*SB
 
-class dealer{
+class game{
     private:
     vector<card> cards;//cartes initialisées
     vector<card> deck;//cartes mélangées
@@ -16,17 +16,20 @@ class dealer{
     void distribuer_player(player &p);
     void hitBoard();
     bool miser_avant(int i);
-    bool player_in_game();
     void print_cards();
     void print_deck();
+    void prefflop(int);
     void encheres(int);
     void determine_winner(hand& hand_dealer);
     int lastMise;
+    bool miseAvant = false;
     float price_pot;
+    int indSB;
+    int indBB;
     
     public:
-    dealer();
-    hand hand_dealer;//les cartes communes sont accessibles par tous le monde
+    game();
+    hand hand_board;//les cartes communes sont accessibles par tous le monde
     int nbJoueurs;
     void play();
 };

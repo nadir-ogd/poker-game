@@ -14,10 +14,6 @@ class player{
     public:
         player(float);
         bool in_game; 
-        bool is_bet = false;
-        bool is_check = false;
-        bool is_raise = false;
-        bool is_call = false;
         void hit(card&);
         void bet(int);
         void check();
