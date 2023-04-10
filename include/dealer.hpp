@@ -3,6 +3,9 @@
 
 #include "./player.hpp"
 
+#define SB 2
+#define BB 2*SB
+
 class dealer{
     private:
     vector<card> cards;//cartes initialisées

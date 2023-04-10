@@ -1,9 +1,6 @@
 #include "../include/dealer.hpp"
 #include <cstdlib>
 
-#define SB 2
-#define BB 2*SB
-
 using namespace std;
 
 dealer::dealer()
@@ -273,6 +270,8 @@ void dealer::determine_winner(hand& hand_board) {
 void dealer::play()
 {
     int nbRounds;
+    int indSB = 0, indBB = 1;
+
     cout << "######### Poker Game #########" << endl;
     cout << "Veuillez entrer le nombre de joureurs : ";
     cin >> nbJoueurs;
@@ -282,7 +281,6 @@ void dealer::play()
     cout << "Le nombre de rounds est : " << nbRounds << endl;
     float credit;
 
-    system("clear");
     for(int i = 0; i < nbJoueurs; i++){
         cout << "player " << i << ", entrez votre crédit : ";
         cin >> credit;
@@ -295,23 +293,28 @@ void dealer::play()
         sleep(rand() % 5);
         shuffle();
         cout << "Les cartes sont mélangées !" << endl;
-        blinds(players[0],players[1]);
+
+        blinds(players[indSB],players[indBB]);
+
         cout << "Le dealer va distribuer 2 cartes pour chaque joueur..." << endl;
         for(int i = 0; i < nbJoueurs; i++){
             distribuer_player(players.at(i));
         }
-            
+        cout << "Le Pré-Flop..." << endl;
         cout << "Le Flop..." << endl;
 
-        for(int i = 2; i< nbJoueurs; i++)
+        for(int i = indBB+1; i< nbJoueurs; i++)
             if(players[i].in_game)
                 encheres(i);
         
-        players[0].is_bet = false;
-        players[1].is_bet = false;
+        for(int i = 0; i < indSB; i++)
+            if(players[i].in_game)
+                encheres(i);
         
-        for(int i = 0; i < 2; i++)
-            encheres(i);
+        players[indSB].is_bet = false;
+        players[indBB].is_bet = false;
+        encheres(indSB);
+        encheres(indBB);
         
         hitBoard();
         hitBoard();
@@ -357,6 +360,9 @@ void dealer::play()
         hand_dealer.print_hand();
 
         determine_winner(hand_dealer);
+
+        indSB = (indSB + 1) % nbJoueurs;
+        indBB = (indBB + 1) % nbJoueurs;
     }
 }
 

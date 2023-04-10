@@ -1,4 +1,5 @@
 #include "../include/player.hpp"
+#include "../include/dealer.hpp"
 
 player::player(float val) {
     if (val <= 0) {
@@ -26,6 +27,17 @@ void player::bet(int amount)
                 break;
             }
         } while (amount > credit);
+    }
+    else if (amount < SB) {
+        cout << "Erreur : la mise ne peut pas être inferieure au Small Blind :" << SB << endl;
+        do {
+            cout << "Entrez une nouvelle mise ou tapez 0 pour fold : ";
+            cin >> amount;
+            if (amount == 0) {
+                in_game = false;
+                break;
+            }
+        } while (amount >= SB);
     }
     if (in_game) {
         credit -= amount;
@@ -67,7 +79,7 @@ void player::call(int val)
     if (in_game) {
         credit -= val;
         mise += val;
-        is_bet = true;
+        is_bet = false;
     }     
 }
 
