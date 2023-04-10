@@ -8,7 +8,6 @@ class dealer{
     vector<card> cards;//cartes initialisées
     vector<card> deck;//cartes mélangées
     vector<player> players;
-    int lastMise;
     void shuffle();
     void blinds(player &p1, player &p2);
     void distribuer_player(player &p);
@@ -18,7 +17,9 @@ class dealer{
     void print_cards();
     void print_deck();
     void encheres(int);
-    int determine_winner(hand& hand_dealer);
+    void determine_winner(hand& hand_dealer);
+    int lastMise;
+    float price_pot;
     
     public:
     dealer();

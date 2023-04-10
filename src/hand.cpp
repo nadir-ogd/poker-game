@@ -23,7 +23,7 @@ void hand::print_hand()
         hand_cards.at(i).print();
 }
 
-bool hand::is_royal_flush(hand hand_board)
+bool hand::is_royal_flush(hand &hand_board)
 {
     if(is_straight_flush(hand_board)){
         for (int i = 0; i < 3; i++) {
@@ -43,7 +43,7 @@ bool hand::is_royal_flush(hand hand_board)
     
 }
 
-bool hand::is_straight_flush(hand hand_board)
+bool hand::is_straight_flush(hand &hand_board)
 {
     bool check = is_straight(hand_board) && is_flush(hand_board);
     if (check) 
@@ -52,7 +52,7 @@ bool hand::is_straight_flush(hand hand_board)
         return false;
 }
 
-bool hand::is_4_of_a_kind(hand hand_board)
+bool hand::is_4_of_a_kind(hand &hand_board)
 {
     hand_cards.insert(hand_cards.end(), hand_board.hand_cards.begin(), hand_board.hand_cards.end());
     sort(hand_cards.begin(), hand_cards.end(), [](card& a, card& b) {
@@ -71,7 +71,7 @@ bool hand::is_4_of_a_kind(hand hand_board)
 }
 
 
-bool hand::is_full_house(hand hand_board)
+bool hand::is_full_house(hand &hand_board)
 {
     bool check =  is_3_of_a_kind(hand_board) && is_one_pair(hand_board);
     if(check)
@@ -80,7 +80,7 @@ bool hand::is_full_house(hand hand_board)
         return false;
 }
 
-bool hand::is_flush(hand hand_board)
+bool hand::is_flush(hand &hand_board)
 {
     hand_cards.insert(hand_cards.end(), hand_board.hand_cards.begin(), hand_board.hand_cards.end());
     sort(hand_cards.begin(), hand_cards.end(), [](card& a, card& b) {
@@ -98,7 +98,7 @@ bool hand::is_flush(hand hand_board)
     return false;
 }
 
-bool hand::is_straight(hand hand_board)
+bool hand::is_straight(hand &hand_board)
 {
     hand_cards.insert(hand_cards.end(), hand_board.hand_cards.begin(), hand_board.hand_cards.end());
     sort(hand_cards.begin(), hand_cards.end(), [](card& a, card& b) {
@@ -124,7 +124,7 @@ bool hand::is_straight(hand hand_board)
 }
 
 
-bool hand::is_3_of_a_kind(hand hand_board)
+bool hand::is_3_of_a_kind(hand &hand_board)
 {
     hand_cards.insert(hand_cards.end(), hand_board.hand_cards.begin(), hand_board.hand_cards.end());
     sort(hand_cards.begin(), hand_cards.end(), [](card& a, card& b) {
@@ -141,7 +141,7 @@ bool hand::is_3_of_a_kind(hand hand_board)
     return false;
 }
 
-bool hand::is_two_pairs(hand hand_board)
+bool hand::is_two_pairs(hand &hand_board)
 {
     hand_cards.insert(hand_cards.end(), hand_board.hand_cards.begin(), hand_board.hand_cards.end());
     sort(hand_cards.begin(), hand_cards.end(), [](card& a, card& b) {
@@ -161,7 +161,7 @@ bool hand::is_two_pairs(hand hand_board)
         return false;  
 }
 
-bool hand::is_one_pair(hand hand_board)
+bool hand::is_one_pair(hand &hand_board)
 {
     hand_cards.insert(hand_cards.end(), hand_board.hand_cards.begin(), hand_board.hand_cards.end());
     sort(hand_cards.begin(), hand_cards.end(), [](card& a, card& b) {
@@ -175,12 +175,13 @@ bool hand::is_one_pair(hand hand_board)
     return false;
 }
 
-void hand::update_score(float val)
-{
-    score+=val;
-}
+// void hand::set_score(int val)
+// {
+//     cout << "t es dans la focntion update_score" << endl;
+//     this->score += val;
+// }
 
-float hand::get_score()
-{
-    return score;
-}
+// int hand::get_score()
+// {
+//     return this->score;
+// }

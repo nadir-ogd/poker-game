@@ -8,6 +8,7 @@ class player{
     private:
         float credit;
         int mise;
+        int score = 0;
         hand hand_player;
   
     public:
@@ -23,11 +24,13 @@ class player{
         void fold();
         void call(int);
         void raise(int);
-        void print_player(int);
+        void print_player();
         void print_card();
         hand get_hand();
         float get_credit();
         void update_credit(float);
+        void setScore(int val);
+        int getScore();
 };
 
 #endif

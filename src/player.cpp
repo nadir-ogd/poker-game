@@ -8,6 +8,7 @@ player::player(float val)
     }
     credit = val;
     mise = 0;
+    score = 0;
     in_game = true;
     is_bet = false;
 }
@@ -72,12 +73,11 @@ hand player::get_hand()
     return hand_player;
 }
 
-void player::print_player(int i)
+void player::print_player()
 {
-    cout << "player " << i << endl;
     cout << "cartes " << endl; print_card();
     cout << "mise " << mise << endl;
-    cout << "credit restant " << credit << endl;
+    cout << "credit " << credit << endl;
 }
 
 float player::get_credit()
@@ -90,3 +90,12 @@ void player::update_credit(float val)
     credit+=val;
 }
 
+void player::setScore(int val)
+{
+    score += val;
+}
+
+int player::getScore()
+{
+    return score;
+}
