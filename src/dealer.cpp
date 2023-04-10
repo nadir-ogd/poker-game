@@ -113,8 +113,7 @@ void dealer::encheres(int i)
             }
         }
         else 
-        {   
-            
+        {        
             cout << "(0) fold" << endl;
             cout << "(1) call" << endl;
             cout << "(2) raise" << endl;
@@ -258,80 +257,106 @@ void dealer::determine_winner(hand& hand_board) {
             cout << "Player " << ind << " a gagné : " << price_pot / winners.size() << " $" << endl;
             players[ind].print_player();
         }
+
+        for(int i = 0; i < nbJoueurs; i++){
+            players[i].get_hand().clear_hand();
+            players[i].in_game = true;
+            players[i].is_bet = false;
+            players[i].in_game = true;
+        }
+
+        hand_board.clear_hand();
+        lastMise = 0;
+        price_pot = 0;        
 }
 
 void dealer::play()
 {
+    int nbRounds;
     cout << "######### Poker Game #########" << endl;
-    cout << "Veuillez entrer le nombre de joureurs : " << endl;
+    cout << "Veuillez entrer le nombre de joureurs : ";
     cin >> nbJoueurs;
-    for(int i = 0; i < nbJoueurs; i++)
-        players.push_back(player(100));  
+
+    
+    nbRounds = 52 / (nbJoueurs * 2); 
+    cout << "Le nombre de rounds est : " << nbRounds << endl;
+    float credit;
+
+    system("clear");
+    for(int i = 0; i < nbJoueurs; i++){
+        cout << "player " << i << ", entrez votre crédit : ";
+        cin >> credit;
+        players.push_back(player(credit));
+    }  
         
     dealer();
-    cout << "Le dealer mélange les cartes..." << endl;
-    sleep(rand() % 5);
-    shuffle();
-    //print_deck();
-    cout << "Les cartes sont mélangées !" << endl;
-    blinds(players[0],players[1]);
-    //for(int i = 0; i < nbJoueurs; i++)
-    //   players.at(i).print_player(i);
-    cout << "Le dealer va distribuer 2 cartes pour chaque joueur..." << endl;
-    for(int i = 0; i < nbJoueurs; i++){
-        distribuer_player(players.at(i));
-    }
+    for(int i = 0; i < nbRounds; i++){
+        cout << "Le dealer mélange les cartes..." << endl;
+        sleep(rand() % 5);
+        shuffle();
+        cout << "Les cartes sont mélangées !" << endl;
+        blinds(players[0],players[1]);
+        cout << "Le dealer va distribuer 2 cartes pour chaque joueur..." << endl;
+        for(int i = 0; i < nbJoueurs; i++){
+            distribuer_player(players.at(i));
+        }
+            
+        cout << "Le Flop..." << endl;
+
+        for(int i = 2; i< nbJoueurs; i++)
+            if(players[i].in_game)
+                encheres(i);
         
-    //print_deck();
-    cout << "Le Flop..." << endl;
-
-    for(int i = 2; i< nbJoueurs; i++)
-        if(players[i].in_game)
+        players[0].is_bet = false;
+        players[1].is_bet = false;
+        
+        for(int i = 0; i < 2; i++)
             encheres(i);
-    
-    hitBoard();
-    hitBoard();
-    hitBoard();
+        
+        hitBoard();
+        hitBoard();
+        hitBoard();
 
-    for(int i = 0; i < nbJoueurs; i++){
-        cout << "Player " << "# " << i << " #" << endl;
-        players.at(i).print_player();
+        for(int i = 0; i < nbJoueurs; i++){
+            cout << "Player " << i << endl;
+            players.at(i).print_player();
+        }
+
+        cout << "Les cartes actuelles de board :" << endl;
+        hand_dealer.print_hand();
+        
+        cout << "Le Turn..." << endl;
+
+        for(int i = 0; i < nbJoueurs; i++)
+            encheres(i);
+
+        hitBoard();
+
+        for(int i = 0; i < nbJoueurs; i++){
+            cout << "Player " << i << endl;
+            players.at(i).print_player();
+        }
+
+        cout << "Les cartes actuelles de board :" << endl;
+        hand_dealer.print_hand();
+
+            
+        cout << "La River..." << endl;
+
+        for(int i = 0; i < nbJoueurs; i++)
+            encheres(i);
+
+        hitBoard();
+
+        for(int i = 0; i < nbJoueurs; i++){
+            cout << "Player " << i << endl;
+            players.at(i).print_player();
+        }
+
+        cout << "Les cartes actuelles de board :" << endl;
+        hand_dealer.print_hand();
+
+        determine_winner(hand_dealer);
     }
-
-    cout << "Les cartes actuelles de board :" << endl;
-    hand_dealer.print_hand();
-       
-    cout << "Le Turn..." << endl;
-
-    for(int i = 0; i < nbJoueurs; i++)
-        encheres(i);
-
-    hitBoard();
-
-    for(int i = 0; i < nbJoueurs; i++){
-        cout << "Player " << "# " << i << " #" << endl;
-        players.at(i).print_player();
-    }
-
-    cout << "Les cartes actuelles de board :" << endl;
-    hand_dealer.print_hand();
-
-           
-    cout << "La River..." << endl;
-
-    for(int i = 0; i < nbJoueurs; i++)
-        encheres(i);
-
-    hitBoard();
-
-    for(int i = 0; i < nbJoueurs; i++){
-        cout << "Player " << "# " << i << " #" << endl;
-        players.at(i).print_player();
-    }
-
-    cout << "Les cartes actuelles de board :" << endl;
-    hand_dealer.print_hand();
-
-    determine_winner(hand_dealer);
 }
 

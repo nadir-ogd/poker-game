@@ -20,8 +20,7 @@ class hand{
         void high_card(hand&);
         void setCards(card &c);
         card get_card(int ind);
-        // void set_score(int val);
-        // int get_score();
         void print_hand();
+        void clear_hand();
 };
 #endif

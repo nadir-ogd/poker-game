@@ -1,11 +1,11 @@
 #include "../include/player.hpp"
 
-player::player(float val)
-{
-    if(val <= 0){
-        cout << "Votre crédit est insuffisant, vous ne pouvez pas jouer ! "<< endl;
-        exit(EXIT_FAILURE);
+player::player(float val) {
+    if (val <= 0) {
+        cout << "Votre crédit est insuffisant, vous ne pouvez pas jouer !" << endl;
+        return;
     }
+    
     credit = val;
     mise = 0;
     score = 0;
@@ -13,15 +13,25 @@ player::player(float val)
     is_bet = false;
 }
 
-void player::bet(int val)
+
+void player::bet(int amount)
 {
-    if(val > credit){
-        cout << "Votre crédit est insuffisant, vous ne pouvez pas miser !"<< endl;
-        exit(EXIT_FAILURE);
+    if (amount > credit) {
+        cout << "Erreur : la mise ne peut pas être supérieure à votre crédit actuel." << endl;
+        do {
+            cout << "Entrez une nouvelle mise ou tapez 0 pour fold : ";
+            cin >> amount;
+            if (amount == 0) {
+                in_game = false;
+                break;
+            }
+        } while (amount > credit);
     }
-    credit -= val;
-    mise += val;     
-    is_bet = true;   
+    if (in_game) {
+        credit -= amount;
+        mise += amount;
+        is_bet = true;
+    }
 }
 
 void player::hit(card &c)
@@ -43,24 +53,42 @@ void player::fold()
 
 void player::call(int val)
 {
-    if(val > credit){
-        cout << "Votre crédit est insuffisant, vous ne pouvez pas miser !"<< endl;
-        exit(EXIT_FAILURE);
+      if (val > credit) {
+        cout << "Erreur : la mise ne peut pas être supérieure à votre crédit actuel." << endl;
+        do {
+            cout << "Entrez une nouvelle mise ou tapez 0 pour fold : ";
+            cin >> val;
+            if (val == 0) {
+                in_game = false;
+                break;
+            }
+        } while (val > credit);
     }
-    credit -= val;
-    mise += val;     
-    is_bet = true;      
+    if (in_game) {
+        credit -= val;
+        mise += val;
+        is_bet = true;
+    }     
 }
 
 void player::raise(int val)
 {
-    if(val > credit){
-        cout << "Votre crédit est insuffisant, vous ne pouvez pas miser !"<< endl;
-        exit(EXIT_FAILURE);
+       if (val > credit) {
+        cout << "Erreur : la mise ne peut pas être supérieure à votre crédit actuel." << endl;
+        do {
+            cout << "Entrez une nouvelle mise ou tapez 0 pour fold : ";
+            cin >> val;
+            if (val == 0) {
+                in_game = false;
+                break;
+            }
+        } while (val > credit);
     }
-    credit -= val;
-    mise += val;     
-    is_bet = true;   
+    if (in_game) {
+        credit -= val;
+        mise += val;
+        is_bet = true;
+    }
 }
 
 void player::print_card()

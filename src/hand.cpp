@@ -23,6 +23,11 @@ void hand::print_hand()
         hand_cards.at(i).print();
 }
 
+void hand::clear_hand()
+{
+    hand_cards.clear();
+}
+
 bool hand::is_royal_flush(hand &hand_board)
 {
     if(is_straight_flush(hand_board)){
