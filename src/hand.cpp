@@ -7,8 +7,6 @@ void hand::setCards(card &c)
         hand_cards.push_back(c);
         //score+=c.getRang();
     }
-    else
-        cout << "toutes les cartes communes ont été dévoilées." << endl;
 }
 
 card hand::get_card(int i)

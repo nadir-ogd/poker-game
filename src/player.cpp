@@ -11,6 +11,7 @@ player::player(float val) {
     mise = 0;
     score = 0;
     in_game = true;
+    all_in = false;
 
 }
 
@@ -109,6 +110,8 @@ void player::print_player()
     cout << "cartes " << endl; print_card();
     cout << "mise " << mise << endl;
     cout << "credit " << credit << endl;
+    if(all_in)
+        cout << "All-in" << endl;
 }
 
 float player::get_credit()
@@ -129,4 +132,16 @@ void player::setScore(int val)
 int player::getScore()
 {
     return score;
+}
+
+int player::getMise()
+{
+    return mise;
+}
+
+void player::allIn()
+{
+    all_in = true;
+    mise += credit;
+    credit = 0;
 }
