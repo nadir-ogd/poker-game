@@ -84,6 +84,8 @@ void game::prefflop(int i)
 {
     int choix,val;
      if(players[i].in_game && !players[i].all_in){
+        cout << "mise de player " << i << " = " << players[i].getMise() << endl;
+        cout << "lastMise = " << lastMise << endl; 
         if(i == indBB && !miseAvant){
             cout << "player " << i << endl;
             cout << "Qu'est ce que vous voullez faire ?" << endl;
@@ -132,7 +134,8 @@ void game::prefflop(int i)
 
                     cin >> choix;
                     switch(choix){
-                        case 0:                                                cout << "Entrez la somme a raiser : ";
+                        case 0:                                               
+                            cout << "Entrez la somme a raiser : ";
                             cin >> val;
                             while(val < lastMise){
                                 cout << "Entrez une nouvelle valeur à raiser : " << endl;
@@ -145,10 +148,10 @@ void game::prefflop(int i)
                             break;
 
                         case 1:
-                            players[i].allIn();
                             price_pot += players[i].get_credit();
                             miseAvant = true;
                             lastMise = players[i].get_credit();
+                            players[i].allIn();
                             break;    
                     }
                     break;
@@ -166,7 +169,9 @@ void game::encheres(int i)
     if(players[i].in_game && !players[i].all_in){
         cout << "player " << i << endl;
         cout << "Qu'est ce que vous voullez faire ?" << endl;
-        if(lastMise == players[i].getMise())
+        cout << "mise de player " << i << " = " << players[i].getMise() << endl;
+        cout << "lastMise = " << lastMise << endl; 
+        if(lastMise == players[i].getMise() || !miseAvant)//lastmise si tous les joueurs ont fait un call et miseAvant (en cas d'absence de mise avant)
         {
             cout << "(0) bet" << endl;
             cout << "(1) check" << endl;
@@ -179,12 +184,14 @@ void game::encheres(int i)
                     players[i].bet(val);
                     lastMise = val;
                     price_pot += val;
+                    miseAvant = true;
                     break;
                 case 1:
+                    miseAvant &= false;
                     break;
             }
         }
-        else if(lastMise > players[i].getMise())
+        else
         {        
             cout << "(0) fold" << endl;
             cout << "(1) call" << endl;
@@ -203,7 +210,8 @@ void game::encheres(int i)
                 case 2:
                     cout << "(0) raise" << endl;
                     cout << "(1) all-in" << endl;
-
+                    
+                    miseAvant &= true;
                     cin >> choix;
                     switch(choix){
                         case 0:                                                
@@ -219,9 +227,11 @@ void game::encheres(int i)
                             break;
 
                         case 1:
-                            players[i].allIn();
                             price_pot += players[i].get_credit();
+                            cout << "pot_price = " << price_pot << endl;
+                            cout << "credit du player de all-in :" << players[i].get_credit() << endl;
                             lastMise = players[i].get_credit();
+                            players[i].allIn();
                             break;    
                     }
                     break;
@@ -392,9 +402,9 @@ void game::play()
         players.push_back(player(credit));
     }  
         
-    system("clear");
-    
-    for(int indRound = 0; indRound < nbRounds; indRound++){
+    // system("clear");
+    int indRound = 0;
+    while(indRound < nbRounds){
         cout << "Le dealer mélange les cartes..." << endl;
         sleep(rand() % 5);
         shuffle();
@@ -458,21 +468,33 @@ void game::play()
         sleep(rand()%5);
 
         for(int i = 0; i < nbJoueurs; i++){
-            players[i].get_hand().clear_hand();
+            players[i].player_clear_hand();
             players[i].print_player(); 
             players[i].in_game = true;
             if(players[i].get_credit() == 0){
-                cout << "Player " << i << " ne possed plus de crédit " << endl;
+                cout << "Player " << i << " est exclu de la partie, car il possede plus de credit..." << endl;
                 players.erase(players.begin() + i);
+                nbJoueurs = nbJoueurs - 1;
             }
+        }
+
+        if(nbJoueurs == 0){
+            cout << "Il y a plus de joueurs dans la table " << endl;
+            break;
+        }
+
+        else if(nbJoueurs == 1){
+            cout << "Il reste un seul joueur dans la table, c le seul gagnant il emporte tout le pot :" << price_pot << " $"  << endl;
+            break;
         }
 
         hand_board.clear_hand();
         lastMise = 0;
         price_pot = 0;       
         
-        cout << "La hand de board : " << endl;
-        hand_board.print_hand();
+        cout << "hand de board est vidée..." << endl;
+
+        indRound++;
     }
 }
 

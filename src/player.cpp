@@ -42,7 +42,7 @@ void player::bet(int amount)
     }
     if (in_game) {
         credit -= amount;
-        mise += amount;
+        mise = amount;
     }
 }
 
@@ -72,7 +72,7 @@ void player::call(int val)
     }
     if (in_game) {
         credit -= val;
-        mise += val;
+        mise = val;
     }     
 }
 
@@ -91,13 +91,18 @@ void player::raise(int val)
     }
     if (in_game) {
         credit -= val;
-        mise += val;
+        mise = val;
     }
 }
 
 void player::print_card()
 {
     hand_player.print_hand();
+}
+
+void player::player_clear_hand()
+{
+    hand_player.clear_hand();
 }
 
 hand player::get_hand()
@@ -116,7 +121,7 @@ void player::print_player()
 
 float player::get_credit()
 {
-    return credit;
+    return this->credit;
 }
 
 void player::update_credit(float val)

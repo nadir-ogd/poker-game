@@ -22,6 +22,7 @@ class player{
         void call(int);
         void raise(int);
         void print_player();
+        void player_clear_hand();
         void print_card();
         hand get_hand();
         float get_credit();
