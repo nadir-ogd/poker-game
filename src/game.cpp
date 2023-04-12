@@ -25,22 +25,6 @@ void game::shuffle()
     }
 }
 
-// bool game::miser_avant(int i) // verifier si il y a une mise faite avant le joueur i
-// {
-//     int j = 0;
-
-//     while(j < nbJoueurs){
-//         if(j == i)
-//             j++;
-//         else
-//             if(players.at(j).is_bet)
-//                 return true;
-//             else 
-//                 j++;
-//     }     
-//     return false;
-// }
-
 void game::print_cards()
 {
     for(int i = 0; i < (int)cards.size(); i++)
@@ -84,8 +68,6 @@ void game::prefflop(int i)
 {
     int choix,val;
      if(players[i].in_game && !players[i].all_in){
-        cout << "mise de player " << i << " = " << players[i].getMise() << endl;
-        cout << "lastMise = " << lastMise << endl; 
         if(i == indBB && !miseAvant){
             cout << "player " << i << endl;
             cout << "Qu'est ce que vous voullez faire ?" << endl;
@@ -169,8 +151,6 @@ void game::encheres(int i)
     if(players[i].in_game && !players[i].all_in){
         cout << "player " << i << endl;
         cout << "Qu'est ce que vous voullez faire ?" << endl;
-        cout << "mise de player " << i << " = " << players[i].getMise() << endl;
-        cout << "lastMise = " << lastMise << endl; 
         if(lastMise == players[i].getMise() || !miseAvant)//lastmise si tous les joueurs ont fait un call et miseAvant (en cas d'absence de mise avant)
         {
             cout << "(0) bet" << endl;
@@ -460,16 +440,12 @@ void game::play()
 
         determine_winner(hand_board);
 
-        cout << endl << "Fin de la round " << indRound << endl;
-        indSB = (indSB + 1) % nbJoueurs;
-        indBB = (indBB + 1) % nbJoueurs;
 
         cout << "Vider les mains des joueurs et du board..." << endl;
         sleep(rand()%5);
 
         for(int i = 0; i < nbJoueurs; i++){
             players[i].player_clear_hand();
-            players[i].print_player(); 
             players[i].in_game = true;
             if(players[i].get_credit() == 0){
                 cout << "Player " << i << " est exclu de la partie, car il possede plus de credit..." << endl;
@@ -488,12 +464,18 @@ void game::play()
             break;
         }
 
-        hand_board.clear_hand();
-        lastMise = 0;
-        price_pot = 0;       
+        hand_board.clear_hand();    
         
-        cout << "hand de board est vidée..." << endl;
+        cout << "Il reste " << nbJoueurs << " dans ma table..." << endl;
 
+        cout << endl << "Fin de la round " << indRound << endl;
+
+        indSB = (indSB + 1) % nbJoueurs;
+        indBB = (indBB + 1) % nbJoueurs;
+
+        lastMise = 0;
+        price_pot = 0;  
+         
         indRound++;
     }
 }
