@@ -241,6 +241,8 @@ void game::determine_winner(hand& hand_board) {
     else if(count == 1){
         cout << "Tout le monde est hors main, le seul gagnant est :" << endl;
         cout << "Player " << ind << " a gagné : " << price_pot << " $" << endl;
+        players[ind].update_credit(price_pot);
+        players[ind].print_player();
     }
 
     else if(count > 1){
@@ -304,9 +306,6 @@ void game::determine_winner(hand& hand_board) {
             if (score_players[i] == max_score)
                 winners.push_back(i);
 
-        for (int i = 0; i < static_cast<int>(winners.size()); i++)
-            players[winners[i]].update_credit(price_pot / winners.size());
-
         string strategie;
 	
 	switch(max_score){
@@ -342,22 +341,15 @@ void game::determine_winner(hand& hand_board) {
             break;
 	}
 
-        vector <int> winners_allin;
-
         cout << "--------- " << strategie << " ---------" << endl;
-        cout << "Winners of this round are : " << endl;
+        cout << "Les gagnants de cette round sont : " << endl;
        
         for (int i = 0; i < static_cast<int>(winners.size()); i++) {
             int ind = winners[i];
     
             cout << "Player " << ind << " a gagné : " << price_pot / winners.size() << " $" << endl;
+            players[i].update_credit(price_pot / winners.size());
             players[ind].print_player();
-        }
-
-        for (int i = 0; i < static_cast<int>(winners.size()); i++) {
-            if(players[i].all_in)
-                winners_allin.push_back(i);
-
         }
     }
 }
@@ -466,16 +458,17 @@ void game::play()
 
         hand_board.clear_hand();    
         
-        cout << "Il reste " << nbJoueurs << " dans ma table..." << endl;
+        cout << "Il reste " << nbJoueurs << " joueurs dans la table..." << endl;
 
-        cout << endl << "Fin de la round " << indRound << endl;
+        cout << endl << "#### Fin de la round " << indRound << " ####" <<endl;
+        cout << endl;
 
         indSB = (indSB + 1) % nbJoueurs;
         indBB = (indBB + 1) % nbJoueurs;
 
         lastMise = 0;
         price_pot = 0;  
-         
+
         indRound++;
     }
 }
