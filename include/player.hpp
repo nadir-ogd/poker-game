@@ -21,15 +21,16 @@ class player{
         void allIn();
         void call(int);
         void raise(int);
-        void print_player();
-        void player_clear_hand();
-        void print_card();
-        hand get_hand();
-        float get_credit();
         void update_credit(float);
         void setScore(int val);
+        hand get_hand();
+        float get_credit();
         int getScore();
         int getMise();
+        void print_player();
+        void print_card();
+        void player_clear_hand();
+
 };
 
 #endif

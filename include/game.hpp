@@ -15,23 +15,20 @@ class game{
     void blinds(player &p1, player &p2);
     void distribuer_player(player &p);
     void hitBoard();
-    bool miser_avant(int i);
-    void print_cards();
-    void print_deck();
     void prefflop(int);
     void encheres(int);
-    void determine_winner(hand& hand_dealer);
+    void determine_winner(hand& hand_board);
     int lastMise;
     bool miseAvant = false;
-    float price_pot;
-    int indSB;
-    int indBB;
     
     public:
     game();
-    hand hand_board;//les cartes communes sont accessibles par tous le monde
-    int nbJoueurs;
     void play();
+    int nbJoueurs;
+    float price_pot;
+    int indSB;
+    int indBB;
+    hand hand_board;//les cartes communes sont accessibles par tous le monde
 };
 
 #endif

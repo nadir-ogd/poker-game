@@ -25,20 +25,6 @@ void game::shuffle()
     }
 }
 
-void game::print_cards()
-{
-    for(int i = 0; i < (int)cards.size(); i++)
-        cards.at(i).print();
-}
-
-void game::print_deck()
-{
-    for(int i = 0; i < (int)deck.size(); i++) 
-    {   
-        deck.at(i).print();
-    }
-}
-
 void game::blinds(player &g, player &gg)
 {
     //Small Blind 
