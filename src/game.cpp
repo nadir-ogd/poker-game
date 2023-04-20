@@ -57,11 +57,13 @@ void game::prefflop(int i)
         if(i == indBB && !miseAvant){
             cout << "player " << i << endl;
             cout << "Qu'est ce que vous voullez faire ?" << endl;
+            
+            do{
+                cout << "(0) bet" << endl;
+                cout << "(1) check" << endl;
+                cin >> choix;
+            }while(choix != 0 || choix != 1);
 
-            cout << "(0) bet" << endl;
-            cout << "(1) check" << endl;
-                
-            cin >> choix;
             switch(choix) {
                 case 0:
                     cout << "Entrez la somme a miser : ";
@@ -80,11 +82,13 @@ void game::prefflop(int i)
             cout << "player " << i << endl;
             cout << "Qu'est ce que vous voullez faire ?" << endl;
 
-            cout << "(0) fold" << endl;
-            cout << "(1) call" << endl;
-            cout << "(2) raise" << endl;
+            do{
+                cout << "(0) fold" << endl;
+                cout << "(1) call" << endl;
+                cout << "(2) raise" << endl;
+                cin >> choix;
+            }while(choix < 0 || choix > 2);
 
-            cin >> choix;
             switch(choix) {
                 case 0:
                     cout << "Vous etre hors main" << endl;
@@ -139,10 +143,12 @@ void game::encheres(int i)
         cout << "Qu'est ce que vous voullez faire ?" << endl;
         if(lastMise == players[i].getMise() || !miseAvant)//lastmise si tous les joueurs ont fait un call et miseAvant (en cas d'absence de mise avant)
         {
-            cout << "(0) bet" << endl;
-            cout << "(1) check" << endl;
-            
-            cin >> choix;
+            do{
+                cout << "(0) fold" << endl;
+                cout << "(1) call" << endl;
+                cin >> choix;
+            }while(choix != 0 || choix != 1);
+
             switch(choix) {
                 case 0:
                     cout << "Entrez la somme a miser : ";
@@ -159,11 +165,13 @@ void game::encheres(int i)
         }
         else
         {        
-            cout << "(0) fold" << endl;
-            cout << "(1) call" << endl;
-            cout << "(2) raise" << endl;
-
-            cin >> choix;
+            do{
+                cout << "(0) fold" << endl;
+                cout << "(1) call" << endl;
+                cout << "(2) raise" << endl;
+                cin >> choix;
+            }while(choix < 0 || choix > 2);
+            
             switch(choix) {
                 case 0:
                     cout << "Vous etre hors main" << endl;
@@ -174,8 +182,11 @@ void game::encheres(int i)
                     price_pot += lastMise;
                     break;
                 case 2:
-                    cout << "(0) raise" << endl;
-                    cout << "(1) all-in" << endl;
+                    do{
+                        cout << "(0) raise" << endl;
+                        cout << "(1) all-in" << endl;
+                        cin >> choix;
+                    }while(choix != 0 || choix != 1);
                     
                     miseAvant &= true;
                     cin >> choix;
