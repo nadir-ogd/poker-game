@@ -2,7 +2,7 @@
 #include "../include/game.hpp"
 
 player::player(float val) {
-    if (val <= 0) {
+    if (val <= 0 || val < BB){
         cout << "Votre crédit est insuffisant, vous ne pouvez pas jouer !" << endl;
         return;
     }

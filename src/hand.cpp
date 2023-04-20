@@ -108,6 +108,7 @@ bool hand::is_straight(hand &hand_board)
         return a.getCouleur() < b.getCouleur() ||
                (a.getCouleur() == b.getCouleur() && a.getRang() < b.getRang());
     });
+
     for (int i = 0; i < 3; i++) {
         if (
             (hand_cards[i].getRang() == hand_cards[i + 1].getRang() - 1 &&
@@ -177,14 +178,3 @@ bool hand::is_one_pair(hand &hand_board)
     }
     return false;
 }
-
-// void hand::set_score(int val)
-// {
-//     cout << "t es dans la focntion update_score" << endl;
-//     this->score += val;
-// }
-
-// int hand::get_score()
-// {
-//     return this->score;
-// }

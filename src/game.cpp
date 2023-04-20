@@ -210,8 +210,10 @@ void game::encheres(int i)
 }
 
 void game::determine_winner(hand& hand_board) {
-    int max_score = 0;
+    cout << "#### Annoncement des gagnants ####" << endl;
+    cout << endl;
 
+    int max_score = 0;
     int count = 0,ind;
     for (int i = 0; i < nbJoueurs; i++) {
         if (players[i].in_game) {
@@ -328,14 +330,21 @@ void game::determine_winner(hand& hand_board) {
 	}
 
         cout << "--------- " << strategie << " ---------" << endl;
+        cout << endl;
+
+        cout << "## Les cartes de Board ##" << endl;
+        hand_board.print_hand();
+        cout << endl;
+
         cout << "Les gagnants de cette round sont : " << endl;
-       
+
         for (int i = 0; i < static_cast<int>(winners.size()); i++) {
             int ind = winners[i];
     
             cout << "Player " << ind << " a gagné : " << price_pot / winners.size() << " $" << endl;
             players[i].update_credit(price_pot / winners.size());
             players[ind].print_player();
+            cout << endl;
         }
     }
 }
@@ -346,13 +355,22 @@ void game::play()
     indSB = 0, indBB = 1;
 
     cout << "######### Poker Game #########" << endl;
-    cout << "Veuillez entrer le nombre de joureurs : ";
-    cin >> nbJoueurs;
-
+    cout << endl;
     
+
+    do{
+        cout << "[*] Nombre de joueurs : ";
+        cin >> nbJoueurs;
+    }while(nbJoueurs < 2 || nbJoueurs > 10);
+
     nbRounds = 52 / (nbJoueurs * 2 + 5); 
-    cout << "Le nombre de rounds est : " << nbRounds << endl;
+    cout << "[*] Nombre de rounds est : " << nbRounds << endl;
+    cout << endl;
+
     float credit;
+
+    cout << "[*] Préparation des joueurs" << endl;
+    cout << endl;
 
     for(int i = 0; i < nbJoueurs; i++){
         cout << "player " << i << ", entrez votre crédit : ";
@@ -360,22 +378,36 @@ void game::play()
         players.push_back(player(credit));
     }  
         
-    // system("clear");
+    cout << "\nAppuyez sur une touche pour continuer" << endl;
+    cin.get();
+    system("clear");
+
     int indRound = 0;
     while(indRound < nbRounds){
-        cout << "Le dealer mélange les cartes..." << endl;
+        cout << "#### Début Round " << indRound << " ####" <<endl;
+        cout << endl;
+
+        cout << "[*] Le dealer mélange les cartes..." << endl;
         sleep(rand() % 5);
         shuffle();
-        cout << "Les cartes sont mélangées !" << endl;
+
+        cout << "[*] Les cartes sont bien mélangées !" << endl;
+        cout << endl;
 
         blinds(players[indSB],players[indBB]);
+        cout << endl;
 
-        cout << "Le dealer va distribuer 2 cartes pour chaque joueur..." << endl;
+        cout << "[*] Le dealer distribue 2 cartes pour chaque joueur..." << endl;
         for(int i = 0; i < nbJoueurs; i++){
             distribuer_player(players.at(i));
         }
 
-        cout << "Le Prefflop..." << endl;
+    
+        cout << "\n\nAppuyez sur une touche pour passer au Prefflop..." << endl;
+        cin.get();
+        system("clear");
+
+        cout << "#### Le Prefflop ####" << endl;
         
         for(int i = indBB+1; i < (nbJoueurs+indBB+1); i++)
             prefflop(i % nbJoueurs);
@@ -384,42 +416,67 @@ void game::play()
         hitBoard();
         hitBoard();
 
+        cout << "\n[*] Les 3 premières cartes sont dévoilées :" << endl; 
+        cout << endl;
 
-        cout << "Les 3 premières cartes sont dévoilées :" << endl; 
         hand_board.print_hand();
 
-        cout << "Le fflop..." << endl;
+        cin.get();
+        cout << "\n\nAppuyez sur une touche pour passer au Fflop..." << endl;
+        cin.get();
+        system("clear");
+
+        cout << "#### Le fflop ####" << endl;
 
         for(int i = indSB; i < (nbJoueurs + indSB); i++)
                 encheres(i % nbJoueurs);
         
         hitBoard();
 
-        cout << "La 4-ème carte est dévoilée :" << endl; 
+        cout << "\n[*] La 4-ème carte est dévoilée :" << endl; 
+        cout << endl;
         hand_board.print_hand();
-    
-        cout << "Le turn..." << endl;
+
+        cin.get();
+        cout << "\n\nAppuyez sur une touche pour passer au Turn..." << endl;
+        cin.get();
+        system("clear");
+        
+        cout << "#### Le turn ####" << endl;
 
         for(int i = indSB; i < (nbJoueurs + indSB); i++)
                 encheres(i % nbJoueurs);
         
         hitBoard();
 
-        cout << "La 5-ème carte est dévoilée :" << endl; 
+        cout << "\n[*] La 5-ème carte est dévoilée :" << endl; 
+        cout << endl;
+
         hand_board.print_hand();
 
-        cout << "La river..." << endl;
+        cin.get();
+        cout << "\n\nAppuyez sur une touche pour passer au River..." << endl;
+        cin.get();
+        system("clear");
+        
+        cout << "#### La river ####" << endl;
 
         for(int i = indSB; i < (nbJoueurs + indSB); i++)
                 encheres(i % nbJoueurs);
 
-        cout << "Les cartes actuelles de board :" << endl;
+        cout << "\n[*] Toutes les cartes sont dévoilées :" << endl;
+        cout << endl;
+
         hand_board.print_hand();
+
+        cin.get();
+        cout << "\n\nAppuyez sur une touche pour déterminer les gagnants..." << endl;
+        cin.get();
+        system("clear");
 
         determine_winner(hand_board);
 
-
-        cout << "Vider les mains des joueurs et du board..." << endl;
+        cout << "\n[*] Vider les mains des joueurs et du board..." << endl;
         sleep(rand()%5);
 
         for(int i = 0; i < nbJoueurs; i++){
@@ -433,20 +490,20 @@ void game::play()
         }
 
         if(nbJoueurs == 0){
-            cout << "Il y a plus de joueurs dans la table " << endl;
+            cout << "[*] Il y a plus de joueurs dans la table " << endl;
             break;
         }
 
         else if(nbJoueurs == 1){
-            cout << "Il reste un seul joueur dans la table, c le seul gagnant il emporte tout le pot :" << price_pot << " $"  << endl;
+            cout << "[*] Il reste un seul joueur dans la table, c le seul gagnant il emporte tout le pot :" << price_pot << " $"  << endl;
             break;
         }
 
         hand_board.clear_hand();    
         
-        cout << "Il reste " << nbJoueurs << " joueurs dans la table..." << endl;
+        cout << "[*] Il reste " << nbJoueurs << " joueurs dans la table..." << endl;
 
-        cout << endl << "#### Fin de la round " << indRound << " ####" <<endl;
+        cout << endl << "\n#### Fin Round "<< indRound << " ####" <<endl;
         cout << endl;
 
         indSB = (indSB + 1) % nbJoueurs;
@@ -456,6 +513,10 @@ void game::play()
         price_pot = 0;  
 
         indRound++;
+
+        cout << "\nAppuyez sur une touche pour commencer une nouvelle round..." << endl;
+        cin.get();
+        system("clear");
     }
 }
 

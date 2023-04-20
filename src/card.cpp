@@ -10,7 +10,10 @@ card::card(Couleur c, Rang r){
 }
 
 void card::print(){
-    cout << "{ " << couleurTxt[couleur] << " | " << rangTxt[rang] << " }" << endl; 
+    if (couleur == Coeurs || couleur == Carreaux)
+        cout << "\033[1;31m" << couleurTxt[couleur] << " | " << rangTxt[rang] << "\033[0m" << endl; 
+    else
+        cout << "\033[1;30m" << couleurTxt[couleur] << " | " << rangTxt[rang] << "\033[0m" << endl; 
 }
 
 int card::getRang()
