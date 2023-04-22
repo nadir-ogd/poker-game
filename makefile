@@ -1,6 +1,5 @@
 CC = g++
-CPPLAGS = -Wall -Iinclude -g
-LDFLAGS = -O3
+CPPLAGS = -Iinclude -g
 EXC = main
 OBJDIR = obj
 SRCDIR = src
@@ -12,14 +11,14 @@ OBJ = $(SRC:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 all: $(EXC)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CC) -o $@ -c $< $(CPPLAGS) $(LDFLAGS)
- 
+	$(CC) -o $@ -c $< $(CPPLAGS)
+
 $(OBJDIR)/main.o: main.cpp
-	$(CC) -o $@ -c $< $(CPPLAGS) $(LDFLAGS)
+	$(CC) -o $@ -c $< $(CPPLAGS)
 
 $(EXC): $(OBJ) $(OBJDIR)/main.o
 	echo "Compilation avec succes !, Pour executer tapez $(EXC)"
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) -o $@ $^
 
 clean:
 	rm -rf $(OBJDIR)/*.o $(EXC)

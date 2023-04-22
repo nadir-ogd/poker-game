@@ -55,14 +55,16 @@ void game::prefflop(int i)
     int choix,val;
      if(players[i].in_game && !players[i].all_in){
         if(i == indBB && !miseAvant){
-            cout << "player " << i << endl;
+            cout << "player " << i << " crédit : "<< players[i].get_credit() << "$" << endl;
+            cout << endl;
             cout << "Qu'est ce que vous voullez faire ?" << endl;
             
             do{
                 cout << "(0) bet" << endl;
                 cout << "(1) check" << endl;
+                cout << "\n Veuillez entrer soit 0 , 1\n";
                 cin >> choix;
-            }while(choix != 0 || choix != 1);
+            }while(choix < 0 || choix > 2);
 
             switch(choix) {
                 case 0:
@@ -79,13 +81,15 @@ void game::prefflop(int i)
                 }
         }
         else {
-            cout << "player " << i << endl;
+            cout << "player " << i << " crédit : "<< players[i].get_credit() << "$" << endl;
+            cout << endl;
             cout << "Qu'est ce que vous voullez faire ?" << endl;
 
             do{
                 cout << "(0) fold" << endl;
                 cout << "(1) call" << endl;
                 cout << "(2) raise" << endl;
+                cout << "\n Veuillez entrer soit 0 , 1 , 2\n";
                 cin >> choix;
             }while(choix < 0 || choix > 2);
 
@@ -101,10 +105,13 @@ void game::prefflop(int i)
                         miseAvant = false;
                     break;
                 case 2:
-                    cout << "(0) raise" << endl;
-                    cout << "(1) all-in" << endl;
-
-                    cin >> choix;
+                    do{
+                        cout << "(0) raise" << endl;
+                        cout << "(1) all-in" << endl;
+                        cout << "\n Veuillez entrer soit 0 , 1\n";
+                        cin >> choix;
+                        cout << "choix dakhel all-in" << endl;
+                    }while(choix < 0 || choix > 1);
                     switch(choix){
                         case 0:                                               
                             cout << "Entrez la somme a raiser : ";
@@ -116,15 +123,15 @@ void game::prefflop(int i)
                             players[i].raise(val);
                             lastMise = val; 
                             price_pot += val;
-                            miseAvant = true;
                             break;
 
                         case 1:
+                            cout << "tout le crédit est misé, le joueur " << i << " se couche alors" << endl;
                             price_pot += players[i].get_credit();
-                            miseAvant = true;
                             lastMise = players[i].get_credit();
                             players[i].allIn();
-                            break;    
+                            break;  
+                        miseAvant = true;  
                     }
                     break;
             } 
@@ -139,15 +146,17 @@ void game::encheres(int i)
     int choix, val = 0;
 
     if(players[i].in_game && !players[i].all_in){
-        cout << "player " << i << endl;
+        cout << "player " << i << " crédit : "<< players[i].get_credit() << "$" << endl;
+        cout << endl;
         cout << "Qu'est ce que vous voullez faire ?" << endl;
         if(lastMise == players[i].getMise() || !miseAvant)//lastmise si tous les joueurs ont fait un call et miseAvant (en cas d'absence de mise avant)
         {
             do{
-                cout << "(0) fold" << endl;
-                cout << "(1) call" << endl;
+                cout << "(0) bet" << endl;
+                cout << "(1) check" << endl;
+                cout << "\n Veuillez entrer soit 0 , 1\n";
                 cin >> choix;
-            }while(choix != 0 || choix != 1);
+            }while(choix < 0 || choix > 1);
 
             switch(choix) {
                 case 0:
@@ -169,6 +178,7 @@ void game::encheres(int i)
                 cout << "(0) fold" << endl;
                 cout << "(1) call" << endl;
                 cout << "(2) raise" << endl;
+                cout << "\n Veuillez entrer soit 0 , 1 , 2\n";
                 cin >> choix;
             }while(choix < 0 || choix > 2);
             
@@ -185,11 +195,10 @@ void game::encheres(int i)
                     do{
                         cout << "(0) raise" << endl;
                         cout << "(1) all-in" << endl;
+                        cout << "\n Veuillez entrer soit 0 , 1\n";
                         cin >> choix;
-                    }while(choix != 0 || choix != 1);
+                    }while(choix < 0 || choix > 1);
                     
-                    miseAvant &= true;
-                    cin >> choix;
                     switch(choix){
                         case 0:                                                
                             cout << "Entrez la somme a raiser : ";
@@ -204,13 +213,13 @@ void game::encheres(int i)
                             break;
 
                         case 1:
+                            cout << "tout le crédit est misé, le joueur " << i << " se couche alors" << endl;
                             price_pot += players[i].get_credit();
-                            cout << "pot_price = " << price_pot << endl;
-                            cout << "credit du player de all-in :" << players[i].get_credit() << endl;
                             lastMise = players[i].get_credit();
                             players[i].allIn();
                             break;    
                     }
+                    miseAvant &= true;
                     break;
             }
         }
@@ -419,7 +428,8 @@ void game::play()
         system("clear");
 
         cout << "#### Le Prefflop ####" << endl;
-        
+        cout << endl;
+
         for(int i = indBB+1; i < (nbJoueurs+indBB+1); i++)
             prefflop(i % nbJoueurs);
 
@@ -438,6 +448,7 @@ void game::play()
         system("clear");
 
         cout << "#### Le fflop ####" << endl;
+        cout << endl;
 
         for(int i = indSB; i < (nbJoueurs + indSB); i++)
                 encheres(i % nbJoueurs);
@@ -454,8 +465,10 @@ void game::play()
         system("clear");
         
         cout << "#### Le turn ####" << endl;
+        cout << endl;
 
         for(int i = indSB; i < (nbJoueurs + indSB); i++)
+
                 encheres(i % nbJoueurs);
         
         hitBoard();
@@ -471,6 +484,7 @@ void game::play()
         system("clear");
         
         cout << "#### La river ####" << endl;
+        cout << endl;
 
         for(int i = indSB; i < (nbJoueurs + indSB); i++)
                 encheres(i % nbJoueurs);
@@ -494,7 +508,7 @@ void game::play()
             players[i].player_clear_hand();
             players[i].in_game = true;
             if(players[i].get_credit() == 0){
-                cout << "Player " << i << " est exclu de la partie, car il possede plus de credit..." << endl;
+                cout << "Player " << i << " est retiré de la partie, car il possede plus de credit..." << endl;
                 players.erase(players.begin() + i);
                 nbJoueurs = nbJoueurs - 1;
             }
@@ -502,12 +516,12 @@ void game::play()
 
         if(nbJoueurs == 0){
             cout << "[*] Il y a plus de joueurs dans la table " << endl;
-            break;
+            break;//on sort de la boucle for donc "fin du jeu"
         }
 
         else if(nbJoueurs == 1){
             cout << "[*] Il reste un seul joueur dans la table, c le seul gagnant il emporte tout le pot :" << price_pot << " $"  << endl;
-            break;
+            break;//on sort de la boucle for donc "fin du jeu"
         }
 
         hand_board.clear_hand();    
@@ -517,11 +531,11 @@ void game::play()
         cout << endl << "\n#### Fin Round "<< indRound << " ####" <<endl;
         cout << endl;
 
-        indSB = (indSB + 1) % nbJoueurs;
-        indBB = (indBB + 1) % nbJoueurs;
+        indSB = (indSB + 1) % nbJoueurs;//L'indice de joueur qui va payer Small Blind dans le prochain round
+        indBB = (indBB + 1) % nbJoueurs;//L'indice de joueur qui va payer Big Blind dans le prochain round
 
-        lastMise = 0;
-        price_pot = 0;  
+        lastMise = 0;//réinitialisation à zéro pour le nouvel round
+        price_pot = 0;//réinitialisation à zéro pour le nouvel round
 
         indRound++;
 
