@@ -7,9 +7,8 @@ game::game()
 {
     for(int i = Piques; i <= Trefles; i++)
 		for(int j = Deuce; j <= Ace; j++)
-			cards.push_back(card(static_cast<Couleur>(i), static_cast<Rang>(j)));
+			cards.push_back(card(static_cast<Couleur>(i), static_cast<Rang>(j)));//initialiser les cartes du jeur (avant les mélanger)
     lastMise = 0;
-    price_pot = SB + BB;
 }
 
 void game::shuffle()
@@ -33,11 +32,13 @@ void game::blinds(player &g, player &gg)
     //Big Blind
     cout << "Player " << indBB << " paye la Big Blind : " << BB << " $" << endl; 
     gg.bet(BB);
+    price_pot = SB + BB;
     lastMise = BB;
 }
 
 void game::distribuer_player(player &p)
 {        
+    //deux cartes pour chaque joueur
     p.hit(deck.back());
     deck.pop_back();
     p.hit(deck.back());
@@ -46,6 +47,7 @@ void game::distribuer_player(player &p)
 
 void game::hitBoard()
 {
+    //une carte est mise sur la table
     hand_board.setCards(deck.back());
     deck.pop_back();
 }
@@ -54,8 +56,8 @@ void game::prefflop(int i)
 {
     int choix,val;
      if(players[i].in_game && !players[i].all_in){
-        if(i == indBB && !miseAvant){
-            cout << "player " << i << " crédit : "<< players[i].get_credit() << "$" << endl;
+        if(i == indBB && !miseAvant){//si c le tour du joueur de SB et aucune augmentation sur sa SB donc il doit soit miser soit checker
+            cout << endl << "player " << i << " crédit : "<< players[i].get_credit() << "$" << endl;
             cout << endl;
             cout << "Qu'est ce que vous voullez faire ?" << endl;
             
@@ -81,7 +83,7 @@ void game::prefflop(int i)
                 }
         }
         else {
-            cout << "player " << i << " crédit : "<< players[i].get_credit() << "$" << endl;
+            cout << endl << "player " << i << " crédit : "<< players[i].get_credit() << "$" << endl;
             cout << endl;
             cout << "Qu'est ce que vous voullez faire ?" << endl;
 
@@ -101,7 +103,7 @@ void game::prefflop(int i)
                 case 1:
                     players[i].call(lastMise);
                     price_pot += lastMise;
-                    if(i == indBB)
+                    if(i == indBB)//le joueur BB joue avant dernier (SB) au prefflop c le cas ou tout le monde a suivi ou flod seulement (pas de mise)
                         miseAvant = false;
                     break;
                 case 2:
@@ -146,10 +148,11 @@ void game::encheres(int i)
     int choix, val = 0;
 
     if(players[i].in_game && !players[i].all_in){
-        cout << "player " << i << " crédit : "<< players[i].get_credit() << "$" << endl;
+        cout << endl << "player " << i << " crédit : "<< players[i].get_credit() << "$" << endl;
         cout << endl;
         cout << "Qu'est ce que vous voullez faire ?" << endl;
-        if(lastMise == players[i].getMise() || !miseAvant)//lastmise si tous les joueurs ont fait un call et miseAvant (en cas d'absence de mise avant)
+        if(lastMise == players[i].getMise() || !miseAvant)
+        //lastmise = mise du joueur : veut dire que tous les joueurs ont fait un call et miseAvant = false (en cas d'absence de mise avant)
         {
             do{
                 cout << "(0) bet" << endl;
@@ -225,7 +228,7 @@ void game::encheres(int i)
         }
     }
     else
-        cout << "player " << i << " vous etes hors main !" << endl;
+        cout << endl << "player " << i << " vous etes hors main !" << endl;
    
 }
 
@@ -233,21 +236,21 @@ void game::determine_winner(hand& hand_board) {
     cout << "#### Annoncement des gagnants ####" << endl;
     cout << endl;
 
-    int max_score = 0;
+    int max_score = 0;//indice de meilleure combinaison possible
     int count = 0,ind;
     for (int i = 0; i < nbJoueurs; i++) {
         if (players[i].in_game) {
-            count++;
-            ind = i;
+            count++;//nb de joueurs en jeu
+            ind = i;//si un seul joueur seulement est en jeu
         }   
     }
 
     if(count == 0){
-        cout << "Tout le monde est hors main, pas de gagnant " << endl; 
+        cout << "[*] Tout le monde est hors main, pas de gagnant " << endl; 
     }
     
     else if(count == 1){
-        cout << "Tout le monde est hors main, le seul gagnant est :" << endl;
+        cout << "[*] Tout le monde est hors main, le seul gagnant est :" << endl;
         cout << "Player " << ind << " a gagné : " << price_pot << " $" << endl;
         players[ind].update_credit(price_pot);
         players[ind].print_player();
@@ -257,7 +260,10 @@ void game::determine_winner(hand& hand_board) {
 
     for (int i =0; i < nbJoueurs; i++) {
         if(players[i].in_game){
-            int score = 0;
+            int score = 0;//[1-10] => de la plus forte combinaison au plus faible
+            //on utilise max pour définir la meilleure combinaison du joueur 
+            //par exemple si is_flush = 1 et is_straight_flush = 1 la combinasion choisie sera straught_flush
+            //car score de straight flush = 9 et de flush est 6
             if (players[i].get_hand().is_royal_flush(hand_board)) {
                 score = 10;
                 max_score = 10;
@@ -304,7 +310,7 @@ void game::determine_winner(hand& hand_board) {
             players[i].setScore(0);
     }
         
-        vector <int> score_players(nbJoueurs);
+        vector <int> score_players(nbJoueurs);//score_players[i] est l"indice de stratégie du joueur i
         vector <int> winners;
 
         for(int i = 0; i < nbJoueurs ; i++)
@@ -316,7 +322,7 @@ void game::determine_winner(hand& hand_board) {
 
         string strategie;
 	
-	switch(max_score){
+	switch(max_score){//pour afficher la stratégie gagnante
 		case 1:
 			strategie = "High Card";
 			break;
@@ -352,16 +358,16 @@ void game::determine_winner(hand& hand_board) {
         cout << "--------- " << strategie << " ---------" << endl;
         cout << endl;
 
-        cout << "## Les cartes de Board ##" << endl;
+        cout << "## cartes de board ##" <<endl;
         hand_board.print_hand();
         cout << endl;
 
-        cout << "Les gagnants de cette round sont : " << endl;
+        cout << "[*] Les gagnants de cette round sont : " << endl;
 
         for (int i = 0; i < static_cast<int>(winners.size()); i++) {
             int ind = winners[i];
     
-            cout << "Player " << ind << " a gagné : " << price_pot / winners.size() << " $" << endl;
+            cout << endl << "Player " << ind << " a gagné : " << price_pot / winners.size() << " $" << endl;
             players[i].update_credit(price_pot / winners.size());
             players[ind].print_player();
             cout << endl;
@@ -372,7 +378,7 @@ void game::determine_winner(hand& hand_board) {
 void game::play()
 {
     int nbRounds;
-    indSB = 0, indBB = 1;
+    indSB = 0, indBB = 1;//pour le Round 0 seulement
 
     cout << "######### Poker Game #########" << endl;
     cout << endl;
@@ -384,7 +390,7 @@ void game::play()
     }while(nbJoueurs < 2 || nbJoueurs > 10);
 
     nbRounds = 52 / (nbJoueurs * 2 + 5); 
-    cout << "[*] Nombre de rounds est : " << nbRounds << endl;
+    cout << "[*] Nombre de rounds est : " << nbRounds << endl;//le nombre de round est estimé en utilisant le nombre de cartes distribués (au joueurs , sur le board)
     cout << endl;
 
     float credit;
@@ -414,7 +420,7 @@ void game::play()
         cout << "[*] Les cartes sont bien mélangées !" << endl;
         cout << endl;
 
-        blinds(players[indSB],players[indBB]);
+        blinds(players[indSB],players[indBB]);//désigner les joueurs qui paient les blinds
         cout << endl;
 
         cout << "[*] Le dealer distribue 2 cartes pour chaque joueur..." << endl;
@@ -430,7 +436,7 @@ void game::play()
         cout << "#### Le Prefflop ####" << endl;
         cout << endl;
 
-        for(int i = indBB+1; i < (nbJoueurs+indBB+1); i++)
+        for(int i = indBB+1; i < (nbJoueurs+indBB+1); i++)//au prefflop le joueur après le indBB joue en premier, et le joueur BB en dernier
             prefflop(i % nbJoueurs);
 
         hitBoard();
@@ -450,6 +456,7 @@ void game::play()
         cout << "#### Le fflop ####" << endl;
         cout << endl;
 
+        //dans le reste des tours, le indSB joue en premier et le dealer en dernier (avant indSB)
         for(int i = indSB; i < (nbJoueurs + indSB); i++)
                 encheres(i % nbJoueurs);
         
@@ -501,16 +508,18 @@ void game::play()
 
         determine_winner(hand_board);
 
-        cout << "\n[*] Vider les mains des joueurs et du board..." << endl;
+        cout << "\n[*] Vider les mains des joueurs et du board..." << endl;//pour le prochain round
         sleep(rand()%5);
 
         for(int i = 0; i < nbJoueurs; i++){
             players[i].player_clear_hand();
             players[i].in_game = true;
-            if(players[i].get_credit() == 0){
+            if(players[i].get_credit() == 0){//si un joueur ne possede rien, il sera retiré
                 cout << "Player " << i << " est retiré de la partie, car il possede plus de credit..." << endl;
                 players.erase(players.begin() + i);
                 nbJoueurs = nbJoueurs - 1;
+                for(int i = 0; i < players.size(); i++)
+                    players[i].print_player();
             }
         }
 

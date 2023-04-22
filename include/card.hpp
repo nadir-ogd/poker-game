@@ -9,7 +9,7 @@
 #include <random>
 #include <unistd.h>
 
-#define N_CARDS 52
+#define N_CARDS 52 //nombre de carte fixe = 52
 
 using namespace std;
 
@@ -23,9 +23,9 @@ class card{
     public:
         card() = default;
         card(Couleur, Rang);
-        int getRang();
-        int getCouleur();
-        void print();
+        int getRang();//retourne le Rang de la carte
+        int getCouleur();//retourne la Couleur de la carte
+        void print();//affiche la carte
 };
 
 #endif

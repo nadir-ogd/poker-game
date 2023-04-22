@@ -4,8 +4,7 @@
 void hand::setCards(card &c)
 {
     if(hand_cards.size() < 5){
-        hand_cards.push_back(c);
-        //score+=c.getRang();
+        hand_cards.push_back(c);//ajoute une carte a la main
     }
 }
 
@@ -41,7 +40,7 @@ bool hand::is_royal_flush(hand &hand_board)
         }
         return false;
     }
-    else
+    else//si la combinaison n'est pas straight flush, forcémenet ce n'est pas une royal flush
         return false;
     
 }
@@ -57,10 +56,11 @@ bool hand::is_straight_flush(hand &hand_board)
 
 bool hand::is_4_of_a_kind(hand &hand_board)
 {
+    //regrouper les mains (de joueur + de board)
     hand_cards.insert(hand_cards.end(), hand_board.hand_cards.begin(), hand_board.hand_cards.end());
     sort(hand_cards.begin(), hand_cards.end(), [](card& a, card& b) {
                return a.getRang() < b.getRang();
-    });
+    });//faut trier les 7 cartes (5 de board + 2 du joueur) par rang seulement pour le 4 of a kind
 
     for (int i = 0; i < 4; i++) {
         if (hand_cards[i].getRang() == hand_cards[i + 1].getRang() &&
@@ -87,7 +87,7 @@ bool hand::is_flush(hand &hand_board)
 {
     hand_cards.insert(hand_cards.end(), hand_board.hand_cards.begin(), hand_board.hand_cards.end());
     sort(hand_cards.begin(), hand_cards.end(), [](card& a, card& b) {
-        return a.getCouleur() < b.getCouleur();
+        return a.getCouleur() < b.getCouleur();//faut trier les 7 cartes par Couleur seulement pour le flush
     });
     for (int i = 0; i < 3; i++) {
         if (hand_cards[i].getCouleur() == hand_cards[i + 1].getCouleur() &&
@@ -108,6 +108,7 @@ bool hand::is_straight(hand &hand_board)
         return a.getCouleur() < b.getCouleur() ||
                (a.getCouleur() == b.getCouleur() && a.getRang() < b.getRang());
     });
+    //faut trier les cartes par couleur et rang (on s'intéresse au deux pour le straight)
 
     for (int i = 0; i < 3; i++) {
         if (
@@ -133,7 +134,7 @@ bool hand::is_3_of_a_kind(hand &hand_board)
     hand_cards.insert(hand_cards.end(), hand_board.hand_cards.begin(), hand_board.hand_cards.end());
     sort(hand_cards.begin(), hand_cards.end(), [](card& a, card& b) {
                return a.getRang() < b.getRang();
-    });
+    });//faut trier les 7 cartes (5 de board + 2 du joueur) par rang seulement pour le 3 of a kind
 
     for (int i = 0; i < 5; i++) {
         if (hand_cards[i].getRang() == hand_cards[i + 1].getRang() &&
@@ -150,7 +151,7 @@ bool hand::is_two_pairs(hand &hand_board)
     hand_cards.insert(hand_cards.end(), hand_board.hand_cards.begin(), hand_board.hand_cards.end());
     sort(hand_cards.begin(), hand_cards.end(), [](card& a, card& b) {
                return a.getRang() < b.getRang();
-    });   
+    });//faut trier les 7 cartes (5 de board + 2 du joueur) par rang seulement pour le two_paires
     int cpt = 0;
     for (int i = 0; i < 6; i++) {
         if (hand_cards[i].getRang() == hand_cards[i+1].getRang()) {
@@ -158,7 +159,7 @@ bool hand::is_two_pairs(hand &hand_board)
             i++;//on skip la paire (2 incrémentation : l'incrémentation du if et du for)
         }
     }
-    if(cpt == 2){
+    if(cpt == 2){//2 paires trouvées
         return true;
     }
     else
@@ -170,7 +171,7 @@ bool hand::is_one_pair(hand &hand_board)
     hand_cards.insert(hand_cards.end(), hand_board.hand_cards.begin(), hand_board.hand_cards.end());
     sort(hand_cards.begin(), hand_cards.end(), [](card& a, card& b) {
                return a.getRang() < b.getRang();
-    });
+    });//faut trier les 7 cartes (5 de board + 2 du joueur) par rang seulement pour le one_paires
     for (int i = 0; i < 6; i++) {
         if (hand_cards[i].getRang() == hand_cards[i+1].getRang()) {
             return true;
